@@ -34,8 +34,8 @@ Module.register("newsfeed",{
 		removeEndTags: "",
 		startTags: [],
 		endTags: [],
-		stackNews: true,
-		stackSize: 5
+		stackNews: true, // ADDED, used to switch the stack on if "true" or keep the original function if "false"
+		stackSize: 5     // ADDED, amount of lines to be stacked. NOTE: custom.css atm. only supports 5 lines!
 
 	},
 
@@ -93,29 +93,28 @@ Module.register("newsfeed",{
 		if (this.activeItem >= this.newsItems.length) {
 			this.activeItem = 0;
 		}
-
-		if (this.config.stackNews) {
+// INTERRUPTION
+		if (this.config.stackNews) { // ADDED, BEGINN OF NEWSSTACK!
+// this code is basically just a customized version of the original code
 			if (this.newsItems.length > 0) {
 
-				var newsStack = document.createElement("ul");
-				newsStack.setAttribute("id", "newsstack");
+				var newsStack = document.createElement("ul"); // add a list
+				newsStack.setAttribute("id", "newsstack"); // give the list an id
 					// 5 empty li-items
-					for (e=1; e<this.config.stackSize; e++) {
+					for (e=1; e<this.config.stackSize; e++) { // create 4 (stackSize - 1) empty list items so the first one to be filled is at the bottom
 						var newsStackItem = document.createElement("li");
 						newsStackItem.className = "newsstack0 bright medium light" + (!this.config.wrapTitle ? " no-wrap" : "");
-						
 						newsStackItem.innerHTML = "";
-						newsStack.appendChild(newsStackItem);
+						newsStack.appendChild(newsStackItem); // add the empty list items to the list
 					}
 
-					for (s=0; s<this.newsItems.length-1; s++) {
+					for (s=0; s<this.newsItems.length-1; s++) { // create all the list items for all known news items we got from the source
 						var newsStackItem = document.createElement("li");
 						newsStackItem.className = "newsstack" + s + " bright medium light" + (!this.config.wrapTitle ? " no-wrap" : "");
-						
 						newsStackItem.innerHTML = this.newsItems[this.activeItem + s].title;
-						newsStack.appendChild(newsStackItem);
+						newsStack.appendChild(newsStackItem); // add the list items to the list
 					}
-				wrapper.appendChild(newsStack);
+				wrapper.appendChild(newsStack); // add the list to the wrapper element that will be produced on the DOM
 
 			} else {
 				if (this.config.hideLoading) {
@@ -127,7 +126,8 @@ Module.register("newsfeed",{
 			}
 
 		}
-		else {
+		else { // END OF NEWSSTACK!
+// this is what would have followed after "INTERRUPTION" above, put inside the else {} statement!
 			if (this.newsItems.length > 0) {
 
 				// this.config.showFullArticle is a run-time configuration, triggered by optional notifications
@@ -233,7 +233,7 @@ Module.register("newsfeed",{
 					wrapper.className = "small dimmed";
 				}
 			}
-		}
+		} // ADDED, this ends the else {} statement with the original code!
 		return wrapper;
 	},
 
@@ -319,19 +319,20 @@ Module.register("newsfeed",{
 	 */
 	scheduleUpdateInterval: function() {
 		var self = this;
-		self.updateDom(self.config.animationSpeed);
 
-		if (this.config.stackNews) {
+		self.updateDom(self.config.animationSpeed);
+// INTERRUPTION
+		if (this.config.stackNews) { // ADDED, BEGINN NEWSSTACK
 			timer = setInterval(function() {
 				self.newsStack();
 			}, this.config.updateInterval);
 		}
-		else {
+		else { // ADDED, again, original code is put inside the else {} statement
 			timer = setInterval(function() {
 				self.activeItem++;
 				self.updateDom(self.config.animationSpeed);
 			}, this.config.updateInterval);
-		}
+		} // ADDED, end of the else {} statement with the original code
 	},
 
 	/* capitalizeFirstLetter(string)
@@ -390,12 +391,14 @@ Module.register("newsfeed",{
 			Log.info(this.name + " - unknown notification, ignoring: " + notification);
 		}
 	},
+
+// ADDED, this is the new NEWSSTACK functionality
 	newsStack: function() {
 		var self = this;
 		Log.info("delete a line");
-		document.getElementById("newsstack").removeChild(document.getElementById("newsstack").children[0]);
+		document.getElementById("newsstack").removeChild(document.getElementById("newsstack").children[0]); // delete the first item of the list so the next one becomes the new first item of the list
 		Log.info(document.getElementById("newsstack").children.length);
-		if (document.getElementById("newsstack").children.length === 0) {
+		if (document.getElementById("newsstack").children.length === 0) { // if there's only one item left we refill the list
 			Log.info("start over again");
 			self.updateDom(self.config.animationSpeed);
 		}
