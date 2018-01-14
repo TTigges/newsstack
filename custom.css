@@ -1,0 +1,39 @@
+/*****************************************************
+ * Magic Mirror                                      *
+ * Custom CSS                                        *
+ *                                                   *
+ * By Michael Teeuw http://michaelteeuw.nl           *
+ * MIT Licensed.                                     *
+ *                                                   *
+ * Add any custom CSS below.                         *
+ * Changes to this file will be ignored by GIT.      *
+ *****************************************************/
+
+ body {
+ 	font-family: "Segoe UI Light", "Segoe UI";
+	font-weight: 200;
+	letter-spacing: 1px;
+	 -webkit-font-smoothing: antialiased;
+ 	margin: 60px 60px 40px;
+	height: calc(100% - 100px);
+ }
+
+ul#newsstack {
+	height: 140px;
+	overflow: hidden;
+    padding-top: 35px;
+    transition: padding-top 1s;
+}
+ul#newsstack:empty {
+    padding-top: 0px;
+}
+ul#newsstack li {
+    height: 35px;
+    margin-top: 0px;
+    transition: margin-top 1s;
+    list-style-type: none;
+}
+
+ul#newsstack li:first-child {
+    margin-top: -33px;
+}
